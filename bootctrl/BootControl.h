@@ -20,13 +20,11 @@
 #include <hidl/MQDescriptor.h>
 #include <hidl/Status.h>
 #include <libboot_control/libboot_control.h>
-#include "boot_region_control_private.h"
 
 namespace android {
 namespace hardware {
 namespace boot {
 namespace V1_2 {
-namespace implementation {
 
 using ::android::hardware::Return;
 using ::android::hardware::Void;
@@ -64,7 +62,6 @@ class BootControl : public IBootControl {
 
 extern "C" IBootControl* HIDL_FETCH_IBootControl(const char* name);
 
-}  // namespace implementation
 }  // namespace V1_2
 }  // namespace boot
 }  // namespace hardware
