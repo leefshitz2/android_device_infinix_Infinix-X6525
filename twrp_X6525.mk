@@ -1,8 +1,17 @@
 #
-# Copyright (C) 2025 The Android Open Source Project
-# Copyright (C) 2025 SebaUbuntu's TWRP device tree generator
+# Copyright (C) 2022 The TWRP Open Source Project
 #
-# SPDX-License-Identifier: Apache-2.0
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 #
 
 # Inherit from those products. Most specific first.
@@ -15,18 +24,11 @@ $(call inherit-product-if-exists, vendor/twrp/config/common.mk)
 # Inherit some common pb stuff.
 $(call inherit-product-if-exists, vendor/pb/config/common.mk)
 
-# Inherit from Infinix-X6525 device
+# Inherit from X6525 device
 $(call inherit-product, device/infinix/X6525/device.mk)
 
-PRODUCT_DEVICE := Infinix-X6525
+PRODUCT_DEVICE := X6525
 PRODUCT_NAME := twrp_X6525
-PRODUCT_BRAND := Infinix
-PRODUCT_MODEL := Infinix X6525
+PRODUCT_BRAND := infinix
+PRODUCT_MODEL := X6525
 PRODUCT_MANUFACTURER := infinix
-
-PRODUCT_GMS_CLIENTID_BASE := android-transsion
-
-PRODUCT_BUILD_PROP_OVERRIDES += \
-    PRIVATE_BUILD_DESC="X6525-user 13 TP1A.220624.014 646 release-keys"
-
-BUILD_FINGERPRINT := Infinix/X6525-OP/Infinix-X6525:13/TP1A.220624.014/250313V1928:user/release-keys
