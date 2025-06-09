@@ -20,7 +20,6 @@
 
 #include <log/log.h>
 #include <android-base/logging.h>
-#include <bootloader_message/bootloader_message.h>
 
 #include "BootControl.h"
 
@@ -28,7 +27,6 @@ namespace android {
 namespace hardware {
 namespace boot {
 namespace V1_2 {
-namespace implementation {
 
 using ::android::hardware::boot::V1_0::CommandResult;
 using namespace android::bootable;
@@ -159,7 +157,6 @@ IBootControl* HIDL_FETCH_IBootControl(const char* /* hal */) {
     return module.release();
 }
 
-}  // namespace implementation
 }  // namespace V1_2
 }  // namespace boot
 }  // namespace hardware
