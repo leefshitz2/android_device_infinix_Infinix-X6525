@@ -27,8 +27,8 @@ $(call inherit-product-if-exists, vendor/pb/config/common.mk)
 # Inherit from X6525 device
 $(call inherit-product, device/infinix/X6525/device.mk)
 
-PRODUCT_DEVICE := X6525
 PRODUCT_NAME := twrp_X6525
-PRODUCT_BRAND := infinix
+PRODUCT_DEVICE := X6525
+PRODUCT_BRAND := Infinix
 PRODUCT_MODEL := X6525
-PRODUCT_MANUFACTURER := infinix
+PRODUCT_MANUFACTURER := Infinix
