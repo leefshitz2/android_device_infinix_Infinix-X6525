@@ -14,80 +14,63 @@
 # limitations under the License.
 #
 
-DEVICE_PATH := device/infinix/X6525
+LOCAL_PATH := device/infinix/X6525
 
-# Architecture
-TARGET_ARCH := arm64
-TARGET_ARCH_VARIANT := armv8-a
-TARGET_CPU_ABI := arm64-v8a
-TARGET_CPU_ABI2 := 
-TARGET_CPU_VARIANT := generic
-TARGET_CPU_VARIANT_RUNTIME := cortex-a75
+# Enable virtual A/B OTA
+$(call inherit-product, $(SRC_TARGET_DIR)/product/virtual_ab_ota.mk)
+PRODUCT_USE_DYNAMIC_PARTITIONS := true
 
-TARGET_2ND_ARCH := arm
-TARGET_2ND_ARCH_VARIANT := armv7-a-neon
-TARGET_2ND_CPU_ABI := armeabi-v7a
-TARGET_2ND_CPU_ABI2 := armeabi
-TARGET_2ND_CPU_VARIANT := generic
-TARGET_2ND_CPU_VARIANT_RUNTIME := cortex-a55
+# Hidl
+PRODUCT_ENFORCE_VINTF_MANIFEST := true 
 
-# Kernel
-TARGET_KERNEL_ARCH := arm64
-TARGET_KERNEL_HEADER_ARCH := arm64
+# A/B
+TARGET_IS_VAB := true
+ENABLE_VIRTUAL_AB := true
+AB_OTA_POSTINSTALL_CONFIG += \
+    RUN_POSTINSTALL_system=true \
+    POSTINSTALL_PATH_system=system/bin/otapreopt_script \
+    FILESYSTEM_TYPE_system=ext4 \
+    POSTINSTALL_OPTIONAL_system=true
 
-TARGET_NO_KERNEL := true
-BOARD_RAMDISK_USE_LZ4 := true
-BOARD_KERNEL_SEPARATED_DTBO := true
+# f2fs utilities
+PRODUCT_PACKAGES += \
+    sg_write_buffer \
+    f2fs_io \
+    check_f2fs
+    
+# Userdata checkpoint
+PRODUCT_PACKAGES += \
+    checkpoint_gc
 
-TARGET_PREBUILT_DTB := $(DEVICE_PATH)/prebuilt/dtb.img
+AB_OTA_POSTINSTALL_CONFIG += \
+    RUN_POSTINSTALL_vendor=true \
+    POSTINSTALL_PATH_vendor=bin/checkpoint_gc \
+    FILESYSTEM_TYPE_vendor=ext4 \
+    POSTINSTALL_OPTIONAL_vendor=true    
 
-BOARD_KERNEL_BASE := 0x00008000
-BOARD_PAGE_SIZE := 4096
-BOARD_KERNEL_OFFSET := 0x00008000
-BOARD_RAMDISK_OFFSET := 0x05400000
-BOARD_TAGS_OFFSET := 0x00000100
-BOARD_BOOT_HEADER_VERSION := 4
-BOARD_DTB_SIZE := 123569
-BOARD_DTB_OFFSET := 0x01f00000
-BOARD_HEADER_SIZE := 2128
-BOARD_VENDOR_CMDLINE := console=ttyS1,115200n8 
+# bootctrl HAL    
+PRODUCT_PACKAGES += \
+    android.hardware.boot@1.2-impl \
+    android.hardware.boot@1.2-service
+    
+PRODUCT_PACKAGES += \
+    bootctrl.default \
+    bootctrl.ums9230 \
+    bootctrl.ums9230.recovery
+ 
+PRODUCT_PACKAGES += \
+    otapreopt_script \
+    cppreopts.sh \
+    update_engine \
+    update_verifier \
+    update_engine_sideload \
+    checkpoint_gc 
 
-BOARD_MKBOOTIMG_ARGS += --dtb $(TARGET_PREBUILT_DTB)
-BOARD_MKBOOTIMG_ARGS += --vendor_cmdline $(BOARD_VENDOR_CMDLINE)
-BOARD_MKBOOTIMG_ARGS += --pagesize $(BOARD_PAGE_SIZE) --board ""
-BOARD_MKBOOTIMG_ARGS += --kernel_offset $(BOARD_KERNEL_OFFSET)
-BOARD_MKBOOTIMG_ARGS += --ramdisk_offset $(BOARD_RAMDISK_OFFSET)
-BOARD_MKBOOTIMG_ARGS += --tags_offset $(BOARD_TAGS_OFFSET)
-BOARD_MKBOOTIMG_ARGS += --header_version $(BOARD_BOOT_HEADER_VERSION)
-BOARD_MKBOOTIMG_ARGS += --dtb_offset $(BOARD_DTB_OFFSET)
-
-# Verified Boot
-BOARD_AVB_ENABLE := true
-BOARD_AVB_RECOVERY_ALGORITHM := SHA256_RSA4096
-BOARD_AVB_RECOVERY_KEY_PATH := external/avb/test/data/testkey_rsa4096.pem
-BOARD_AVB_ROLLBACK_INDEX := $(PLATFORM_SECURITY_PATCH_TIMESTAMP)
-BOARD_AVB_MAKE_VBMETA_IMAGE_ARGS += --set_hashtree_disabled_flag
-BOARD_AVB_MAKE_VBMETA_IMAGE_ARGS += --flags 3
-BOARD_AVB_RECOVERY_ROLLBACK_INDEX := 1
-BOARD_AVB_RECOVERY_ROLLBACK_INDEX_LOCATION := 1
-
-# Hack: prevent anti rollback
-PLATFORM_SECURITY_PATCH := 2099-12-31
-VENDOR_SECURITY_PATCH := 2099-12-31
-PLATFORM_VERSION := 16.1.0
-
-# Platform
-TARGET_BOARD_PLATFORM := ums9230
-
-# Recovery
-TARGET_NO_RECOVERY := true
-TARGET_RECOVERY_PIXEL_FORMAT := RGBX_8888
-BOARD_USES_VENDOR_BOOT := true
-BOARD_INCLUDE_RECOVERY_RAMDISK_IN_VENDOR_BOOT := true
-TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/recovery/root/system/etc/recovery.fstab
-
-## Inherit partitions flags
-include device/infinix/X6525/partitions.mk
-
-#flags
-include device/infinix/X6525/TW_flags.mk
+PRODUCT_PACKAGES_DEBUG += \
+    bootctl    
+    
+# Fastbootd
+PRODUCT_PACKAGES += \
+    fastbootd \
+    android.hardware.fastboot@1.0-impl-mock \
+    android.hardware.fastboot@1.0-impl-mock.recovery
